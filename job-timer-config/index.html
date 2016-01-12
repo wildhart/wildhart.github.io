@@ -71,7 +71,7 @@
         <div class="item-container-header">Hours per Day</div>
         <div class="item-container-content">
           <label class="item">
-            <input type="range" class="item-slider" name="slider-1" value="24" min="1" max="24" step="0.5">
+            <input type="range" class="item-slider" name="slider-1" value="24" min="1" max="24" step="0.5" id="hrs_per_day_slider">
             <div class="item-input-wrapper item-slider-text">
               <input type="text" class="item-input" name="slider-1" value="24" min="1" max="24">
             </div>
@@ -87,17 +87,20 @@
   </body>
   <script>
   function getConfigData() {
-    var backgroundColorPicker = document.getElementById('background_color_picker');
-    var highContrastCheckbox = document.getElementById('high_contrast_checkbox');
+    var showClock = document.getElementById('show_clock_checkbox');
+    var autoSort = document.getElementById('auto_sort_checkbox');
+    var hrsPerDay = document.getElementById('hrs_per_day_slider');
  
     var options = {
-      'background_color': backgroundColorPicker.value,
-      'high_contrast': highContrastCheckbox.checked
+      'show_clock': showClock.checked,
+      'auto_sort': autoSort.checked,
+      'hrs_per_day': hrsPerDay.value
     };
 
     // Save for next launch
-    localStorage['background_color'] = options['background_color'];
-    localStorage['high_contrast'] = options['high_contrast'];
+    localStorage['show_clock'] = options['show_clock'];
+    localStorage['auto_sort'] = options['auto_sort'];
+    localStorage['hrs_per_day'] = options['hrs_per_day'];
 
     console.log('Got options: ' + JSON.stringify(options));
     return options;
@@ -125,13 +128,15 @@
   });
 
   (function() {
-    var backgroundColorPicker = document.getElementById('background_color_picker');
-    var highContrastCheckbox = document.getElementById('high_contrast_checkbox');
+    var showClock = document.getElementById('show_clock_checkbox');
+    var autoSort = document.getElementById('auto_sort_checkbox');
+    var hrsPerDay = document.getElementById('hrs_per_day_slider');
 
     // Load any previously saved configuration, if available
-    if(localStorage['high_contrast']) {
-      highContrastCheckbox.checked = JSON.parse(localStorage['high_contrast']);
-      backgroundColorPicker.value = localStorage['background_color'];
+    if(localStorage['show_clock']) {
+      showClock.checked = localStorage['show_clock'];
+      autoSort.checked = localStorage['auto_sort'];
+      hrsPerDay.value = localStorage['hrs_per_day'];
     }
   })();
   </script>
