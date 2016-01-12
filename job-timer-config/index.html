@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <title>Slate Example Configuration</title>
+  <title>Job Timer Configuration</title>
   <link rel='stylesheet' type='text/css' href='css/slate.min.css'>
   <script src='js/slate.min.js'></script>
   <style>
@@ -18,7 +18,7 @@
   </head>
 
   <body>
-    <h1 class='title'>Slate Example Configuration</h1>
+    <h1 class='title'>Job Timer Configuration</h1>
 
     <div class='item-container'>
       <div class='item-container-content'>
@@ -29,30 +29,40 @@
     </div>
 
     <div class='item-container'>
-      <div class='item-container-header'>Customizability</div>
-      <div class='item-container-content'>
-        <label class='item'>
-          Background Color
-          <input id='background_color_picker' type='text' class='item-color item-color-sunny' value='#000000'>
-        </label>
-      </div>
-      <div class='item-container-footer'>
-        Choose the app's background color. Used if High Contrast Mode is not selected. Note: Only available on Basalt watches that support many colors.
-      </div>
-    </div>
+      <div class='item-container-header'>Options</div>
 
-    <div class='item-container'>
-      <div class='item-container-header'>Accessibility</div>
       <div class='item-container-content'>
         <label class='item'>
-          High Contrast Mode
-          <input id='high_contrast_checkbox' type='checkbox' class='item-toggle'>
+          Show Clock
+          <input id='show_clock_checkbox' type='checkbox' class='item-toggle'>
+        </label>
+      </div>
+        <div class='item-container-footer'>
+          This shows a clock at the top of the jobs list.
+        </div>
+
+      <div class='item-container-content'>
+        <label class='item'>
+          Auto Sort
+          <input id='auto_sort_checkbox' type='checkbox' class='item-toggle'>
         </label>
       </div>
       <div class='item-container-footer'>
-        This switches the app colors to a higher contrast set that promotes readability in low light.
+        This moves times to the top when you start them, so all your regular timers will be near the top.
       </div>
     </div>
+      
+      <div class="item-container">
+        <div class="item-container-header">Hours per Day</div>
+        <div class="item-container-content">
+          <label class="item">
+            <input type="range" class="item-slider" name="slider-1" value="24" min="1" max="24" step="0.5">
+            <div class="item-input-wrapper item-slider-text">
+              <input type="text" class="item-input" name="slider-1" value="24" min="1" max="24">
+            </div>
+          </label>
+        </div>
+      </div>
 
     <div class='item-container'>
       <div class='button-container'>
