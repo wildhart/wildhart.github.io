@@ -22,7 +22,7 @@
 
     <div class='item-container'>
       <div class='item-container-content'>
-        <div class='item'>
+        <div class='item' id='temp'>
           Use this configuration page to choose the settings you would like applied to this app.
         </div>
       </div>
@@ -138,6 +138,7 @@
       autoSort.checked = localStorage['auto_sort'];
       hrsPerDay.value = localStorage['hrs_per_day'];
     }
+    document.getElementById('temp').innerHTML=window.location;
   })();
   </script>
 </html>
