@@ -22,24 +22,24 @@
 
     <div class='item-container'>
       <div class='item-container-content'>
-        <div class='item' id='temp'>
+        <div class='item'>
           Use this configuration page to choose the settings you would like applied to this app.
         </div>
       </div>
     </div>
 
     <div class="item-container">
-      <div class="item-container-header">Timers</div>
-      <div class="item-container-content">
+      <div class="item-container-header" id="div-timers">Timers</div>
+      <div class="item-container-content div-timer">
         <label class="item">
           <div class="item-input-wrapper item-input-wrapper-button">
-            <input type="text" class="item-input" name="input-2" placeholder="Timer Name">
+            <input type="text" class="item-input" name="input-timer" placeholder="Timer Name">
           </div>
-          <input type="button" class="item-button item-input-button" value="X">
+          <input type="button" class="item-button item-input-button delete-timer" value="X">
         </label>
       </div>
       <div class="button-container">
-        <input type="button" class="item-button" value="New Timer">
+        <input type="button" class="item-button" value="New Timer" id="new-timer">
       </div>
     </div>
 
@@ -71,9 +71,9 @@
         <div class="item-container-header">Hours per Day</div>
         <div class="item-container-content">
           <label class="item">
-            <input type="range" class="item-slider" name="slider-1" value="24" min="1" max="24" step="0.5" id="hrs_per_day_slider">
+            <input type="range" class="item-slider" name="slider-hours" value="24" min="1" max="24" step="0.5" id="hrs_per_day_slider">
             <div class="item-input-wrapper item-slider-text">
-              <input type="text" class="item-input" name="slider-1" value="24" min="1" max="24">
+              <input type="text" class="item-input" name="slider-hours" value="24" min="1" max="24" id="hrs_per_day_text">
             </div>
           </label>
         </div>
@@ -86,6 +86,9 @@
     </div>
   </body>
   <script>
+
+  var $div_timer; // used to store the template for each timer
+
   function getConfigData() {
     var showClock = document.getElementById('show_clock_checkbox');
     var autoSort = document.getElementById('auto_sort_checkbox');
@@ -96,11 +99,17 @@
       'auto_sort': autoSort.checked,
       'hrs_per_day': hrsPerDay.value
     };
-
+    $(".div-timer input[type=text]").each(function(index) {
+      console.log(index,this);
+      th=this;
+      options['job_'+index]=this.value+"|"+this.dataset.seconds;
+    });
+    /*
     // Save for next launch
     localStorage['show_clock'] = options['show_clock'];
     localStorage['auto_sort'] = options['auto_sort'];
     localStorage['hrs_per_day'] = options['hrs_per_day'];
+    */
 
     console.log('Got options: ' + JSON.stringify(options));
     return options;
@@ -127,18 +136,46 @@
     document.location = return_to + encodeURIComponent(JSON.stringify(getConfigData()));
   });
 
+  $("#new-timer").on('click', function() {
+    var $new_timer = $div_timer.clone();
+    $new_timer.find("input[type=text]").attr("name","input-timer-"+(new Date().getTime())).val("New Job").data("seconds",0);
+    $new_timer.appendTo($("#div-timers"))
+  });
+
+  $("body").on('click', ".delete-timer", function(e) { // need to use this binding method since elements do not exist yet
+    console.log(e,this);
+    var $t=$(this);
+    var job = $t.closest("label").find("input[type=text]").attr("name").replace('input-timer-','');
+    $t.closest(".div-timer").remove();
+  });
+
   (function() {
     var showClock = document.getElementById('show_clock_checkbox');
     var autoSort = document.getElementById('auto_sort_checkbox');
     var hrsPerDay = document.getElementById('hrs_per_day_slider');
 
-    // Load any previously saved configuration, if available
-    if(localStorage['show_clock']) {
+    $div_timer=$(".div-timer").remove();
+    
+    if (getQueryParam("show_clock")) { // Load configuration sent from phone is available in the URI
+      showClock.checked = getQueryParam("show_clock")=="1";
+      autoSort.checked = getQueryParam("auto_sort")=="1";
+      $('input[name=slider-hours]').val(getQueryParam("hrs_per_day"));
+
+      var job=0;
+      while (getQueryParam("job_"+job)) {
+        var $new_timer = $div_timer.clone();
+        var params = getQueryParam("job_"+job).split("|");
+        $new_timer.find("input[type=text]").attr("name","input-timer-"+job).val(params[0]).data("seconds",params[1]);
+        $new_timer.appendTo($("#div-timers"))
+        job++;
+      }
+    } /*else if (localStorage['show_clock']) { // Load any previously saved configuration, if available
+
       showClock.checked = localStorage['show_clock'];
       autoSort.checked = localStorage['auto_sort'];
       hrsPerDay.value = localStorage['hrs_per_day'];
-    }
-    document.getElementById('temp').innerHTML=window.location;
+    } */
+
   })();
   </script>
 </html>
