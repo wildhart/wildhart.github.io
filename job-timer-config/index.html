@@ -14,11 +14,36 @@
     color: #888888;
     text-align: center;
   }
+  table {
+    border-collapse: collapse;
+    margin:auto;
+  }
+  td, th {
+    border:1px solid black;
+    padding:3px;
+  }
+  tr td:nth-child(2) {
+    text-align:right;
+  }
   </style>
   </head>
 
   <body>
     <h1 class='title'>Job Timer Configuration</h1>
+
+    <div class='item-container'>
+      <div class="item-container-header">Time Sheet Data</div>
+        <div class='item-container-content'>
+          <table id="time-sheet">
+            <thead>
+              <tr><th>Job</th><th>Minutes</th><tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
     <div class='item-container'>
       <div class='item-container-content'>
@@ -167,7 +192,8 @@
         var $new_timer = $div_timer.clone();
         var params = getQueryParam("job_"+job).split("|");
         $new_timer.find("input[type=text]").attr("name","input-timer-"+job).val(params[0]).data("seconds",params[1]);
-        $new_timer.appendTo($("#div-timers"))
+        $new_timer.appendTo("#div-timers");
+        $("<tr><td>"+params[0]+"</td><td>"+Math.round(params[1]/60)+"</td></tr>").appendTo("#time-sheet");
         job++;
       }
       if (getQueryParam("active_job")) {
