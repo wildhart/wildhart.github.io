@@ -188,11 +188,13 @@
         var params = getQueryParam("job_"+job).split("|");
         $new_timer.find("input[type=text]").attr("name","input-timer-"+job).val(params[0]).data("seconds",params[1]);
         $new_timer.appendTo("#div-timers");
-        $("<tr><td>"+params[0]+"</td><td>"+Math.round(params[1]/60)+"</td></tr>").appendTo("#time-sheet");
+        $("<tr><td>"+params[0]+"</td><td class='mins'>"+Math.round(params[1]/60)+"</td></tr>").appendTo("#time-sheet");
         job++;
       }
       if (getQueryParam("active_job")) {
         $(".div-timer input[type=text]").eq(getQueryParam("active_job")).addClass("active_job");
+        $cell=$(".mins").eq(getQueryParam("active_job"));
+        $cell.text($cell.text()*1.0+Math.floor(getQueryParam("timer_secs")/60));
       }
     } /*else if (localStorage['show_clock']) { // Load any previously saved configuration, if available
 
