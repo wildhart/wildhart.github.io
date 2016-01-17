@@ -99,9 +99,12 @@
       'auto_sort': autoSort.checked,
       'hrs_per_day': hrsPerDay.value
     };
+    var active_job=0;
     $(".div-timer input[type=text]").each(function(index) {
       options['job_'+index]=encodeURIComponent(this.value+"|"+this.dataset.seconds);
+      if ($(this).hasClass("active_job")) active_job=index;
     });
+    if (active_job) options.active_job = active_job;
     /*
     // Save for next launch
     localStorage['show_clock'] = options['show_clock'];
@@ -166,6 +169,9 @@
         $new_timer.find("input[type=text]").attr("name","input-timer-"+job).val(params[0]).data("seconds",params[1]);
         $new_timer.appendTo($("#div-timers"))
         job++;
+      }
+      if (getQueryParam("active_job")) {
+        $(".div-timer input[type=text]").eq(getQueryParam("active_job")).addClass("active_job");
       }
     } /*else if (localStorage['show_clock']) { // Load any previously saved configuration, if available
 
