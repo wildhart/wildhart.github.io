@@ -18,7 +18,7 @@
     text-align:center;
   }
   textarea {
-    width:90%;
+    width:100%;
 
   }
   </style>
@@ -28,10 +28,13 @@
     <h1 class='title'>Job Timer Configuration</h1>
 
     <div class='item-container'>
-      <div class="item-container-header">Time Sheet Data</div>
+      <div class="item-container-header">Time Sheet Data </div>
         <div class='item-container-content center'>
           <textarea id="time-sheet">
           </textarea>
+          <div class='button-container'>
+            <input id='sort-button' type='button' class='item-button' value='Sort Alphabetically'>
+          </div>
         </div>
       </div>
     </div>
@@ -179,6 +182,21 @@
     $t.closest(".div-timer").remove();
   });
 
+  $("#sort-button").on('click', function() {
+      var job=0;
+      var time_sheet_text="Job, Minutes\n";
+      var jobs=[];
+      while (getQueryParam("job_"+job)) {
+        var params = getQueryParam("job_"+job).split("|");
+        jobs.push(params[0]+", "+Math.round(params[1]/60)+"\n");
+        job++;
+      }
+      jobs.sort();
+
+      time_sheet_text+=jobs.join("")+"\nSince last reset on: "+getQueryParam("last_reset");
+      $("#time-sheet").val(time_sheet_text).attr("rows",job+4);
+  });
+
   (function() {
     var showClock = document.getElementById('show_clock_checkbox');
     var autoSort = document.getElementById('auto_sort_checkbox');
@@ -204,7 +222,7 @@
         job++;
       }
 
-      time_sheet_text+="Since last reset on: "+getQueryParam("last_reset");
+      time_sheet_text+="\nSince last reset on: "+getQueryParam("last_reset");
       $("#time-sheet").val(time_sheet_text).attr("rows",job+4);
       if (getQueryParam("active_job")) {
         $(".div-timer input[type=text]").eq(getQueryParam("active_job")).addClass("active_job");
