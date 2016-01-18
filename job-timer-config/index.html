@@ -18,7 +18,7 @@
     text-align:center;
   }
   textarea {
-    width:50%;
+    width:90%;
 
   }
   </style>
@@ -203,7 +203,8 @@
         time_sheet_text+=params[0]+", "+Math.round(params[1]/60)+"\n";
         job++;
       }
-      time_sheet_text+="Since last reset on: "+getQueryParam("hrs_per_day");
+
+      time_sheet_text+="Since last reset on: "+getQueryParam("last_reset");
       $("#time-sheet").val(time_sheet_text).attr("rows",job+4);
       if (getQueryParam("active_job")) {
         $(".div-timer input[type=text]").eq(getQueryParam("active_job")).addClass("active_job");
