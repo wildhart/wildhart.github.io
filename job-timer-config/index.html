@@ -105,6 +105,7 @@
   <script>
 
   var $div_timer; // used to store the template for each timer
+  var version=0;
 
   function getConfigData() {
     var showClock = document.getElementById('show_clock_checkbox');
@@ -112,6 +113,7 @@
     var hrsPerDay = document.getElementById('hrs_per_day_slider');
  
     var options = {
+      'version' : version,
       'show_clock': showClock.checked,
       'auto_sort': autoSort.checked,
       'hrs_per_day': hrsPerDay.value
@@ -175,6 +177,7 @@
     $div_timer=$(".div-timer").remove();
     
     if (getQueryParam("show_clock")) { // Load configuration sent from phone is available in the URI
+      version = getQueryParam("version");
       showClock.checked = getQueryParam("show_clock")=="1";
       autoSort.checked = getQueryParam("auto_sort")=="1";
       $('input[name=slider-hours]').val(getQueryParam("hrs_per_day"));
