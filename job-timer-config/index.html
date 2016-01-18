@@ -101,11 +101,18 @@
         <input id='submit_button' type='button' class='item-button' value='SUBMIT'>
       </div>
     </div>
+
+    <div class='item-container'>
+      <div class="item-container-footer">
+        Job Timer Version <span id="app-version">x.xx</span><br/>
+        by Chris Morison: <a href="mailto:cmorison@gmail.com">cmorison@gmail.com</a>
+      </div>
+    </div>
   </body>
   <script>
 
   var $div_timer; // used to store the template for each timer
-  var version=0;
+  var dataVersion=0;
 
   function getConfigData() {
     var showClock = document.getElementById('show_clock_checkbox');
@@ -113,7 +120,7 @@
     var hrsPerDay = document.getElementById('hrs_per_day_slider');
  
     var options = {
-      'version' : version,
+      'data-version' : dataVersion,
       'show_clock': showClock.checked,
       'auto_sort': autoSort.checked,
       'hrs_per_day': hrsPerDay.value
@@ -146,6 +153,18 @@
     }
     return defaultValue || false;
   }
+
+  function selectText(containerid) {
+    if (document.selection) {
+        var range = document.body.createTextRange();
+        range.moveToElementText(document.getElementById(containerid));
+        range.select();
+    } else if (window.getSelection) {
+        var range = document.createRange();
+        range.selectNode(document.getElementById(containerid));
+        window.getSelection().addRange(range);
+    }
+  }
  
   var submitButton = document.getElementById('submit_button');
   submitButton.addEventListener('click', function() {
@@ -177,7 +196,8 @@
     $div_timer=$(".div-timer").remove();
     
     if (getQueryParam("show_clock")) { // Load configuration sent from phone is available in the URI
-      version = getQueryParam("version");
+      dataVersion = getQueryParam("data-version");
+      $("#app-version").text(getQueryParam("app_version"));
       showClock.checked = getQueryParam("show_clock")=="1";
       autoSort.checked = getQueryParam("auto_sort")=="1";
       $('input[name=slider-hours]').val(getQueryParam("hrs_per_day"));
