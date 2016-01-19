@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <title>Job Timer Configuration</title>
+  <title>Medication Timer Configuration</title>
   <link rel='stylesheet' type='text/css' href='css/slate.min.css'>
   <script src='js/slate.min.js'></script>
   <style>
@@ -17,55 +17,61 @@
   .center {
     text-align:center;
   }
-  textarea {
-    width:100%;
-
+  .tab-hint {
+    display:none;
+  }
+  .tab-hint.active {
+    display:inline;
   }
   </style>
   </head>
 
   <body>
-    <h1 class='title'>Job Timer Configuration</h1>
-
-    <div class='item-container'>
-      <div class="item-container-header">Time Sheet Data </div>
-        <div class='item-container-content center'>
-          <textarea id="time-sheet">
-          </textarea>
-          <div class='button-container'>
-            <input id='sort-button' type='button' class='item-button' value='Sort Alphabetically'>
-          </div>
-        </div>
-      </div>
-    </div>
+    <h1 class='title'>Medication Timer Configuration</h1>
 
     <div class="item-container">
-      <div class="item-container-header" id="div-timers">Timers</div>
+      <div class="item-container-header" id="div-timers">Medication</div>
       <div class="item-container-content div-timer">
         <label class="item">
           <div class="item-input-wrapper item-input-wrapper-button">
-            <input type="text" class="item-input" name="input-timer" placeholder="Timer Name">
+            <input type="text" class="item-input" name="input-med-name" placeholder="Medication Name">
           </div>
-          <input type="button" class="item-button item-input-button delete-timer" value="X">
+          <input type="button" class="item-button item-input-button delete-med" value="X">
         </label>
       </div>
       <div class="button-container">
-        <input type="button" class="item-button" value="New Timer" id="new-timer">
+        <input type="button" class="item-button" value="New Timer" id="new-med">
       </div>
     </div>
 
     <div class='item-container'>
       <div class='item-container-header'>Options</div>
+      <div class='item-container-content'>
+        <label class='item'>
+          Mode
+            <div class='tab-buttons'>
+              <a name="mode" data-md='0' class="tab-button active">Count up</a>
+              <a name="mode" data-md='1' class="tab-button">Count down</a>
+              <a name="mode" data-md='2' class="tab-button">Next time</a>
+            </div>
+        </label>
+      </div>
+      <div class='item-container-footer'>
+        <span class="tab-hint active" id="mode-0">Timer counts up from when medication was last taken.</span>
+        <span class="tab-hint" id="mode-1">Timer counts down to when medication is next due.</span>
+        <span class="tab-hint" id="mode-2">Shows time when medication is next due.</span>
+      </div>
 
       <div class='item-container-content'>
         <label class='item'>
-          Show Clock
-          <input id='show_clock_checkbox' type='checkbox' class='item-toggle'>
+          Alarm
+          <input id='alarm_checkbox' type='checkbox' class='item-toggle'>
         </label>
       </div>
-        <div class='item-container-footer'>
-          This shows a clock at the top of the jobs list.
-        </div>
+      <div class='item-container-footer'>
+        Open app and vibrate when next medication is due.
+      </div>
+    </div>
 
       <div class='item-container-content'>
         <label class='item'>
@@ -74,21 +80,9 @@
         </label>
       </div>
       <div class='item-container-footer'>
-        This moves timers to the top when you start them, so all your regular timers will be near the top.
+        Sort the medication list with the next medications at the top.
       </div>
     </div>
-      
-      <div class="item-container">
-        <div class="item-container-header">Hours per Day</div>
-        <div class="item-container-content">
-          <label class="item">
-            <input type="range" class="item-slider" name="slider-hours" value="24" min="1" max="24" step="0.5" id="hrs_per_day_slider">
-            <div class="item-input-wrapper item-slider-text">
-              <input type="text" class="item-input" name="slider-hours" value="24" min="1" max="24" id="hrs_per_day_text">
-            </div>
-          </label>
-        </div>
-      </div>
 
     <div class='item-container'>
       <div class='button-container'>
@@ -189,6 +183,12 @@
     var $t=$(this);
     var job = $t.closest("label").find("input[type=text]").attr("name").replace('input-timer-','');
     $t.closest(".div-timer").remove();
+  });
+
+  $(".tab-button").on('click', function(e) {
+    var mode=$(this).data('md');
+    $(".tab-hint").removeClass('active');
+    $("#mode-"+mode).addClass('active');
   });
 
   $("#sort-button").on('click', function() {
