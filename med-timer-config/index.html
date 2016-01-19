@@ -25,14 +25,16 @@
   }
   .margin {
     margin-left:10%;
-    margin-right:20%;
   }
   .half {
     display:block;
     margin-left:0%;
-    width:40%;
+    width:42%;
     float:left;
     border-top:0px !important;
+  }
+  .half.right {
+    float:right;
   }
   .clear {
     clear:both;
@@ -81,7 +83,7 @@
             Next Due
             <input type="time" class="item-time med-time" name="med-time-n" value="18:35">
           </label>
-          <label class='item half'>
+          <label class='item half right'>
             Fixed
             <input id='med-fixed-n' type='checkbox' class='item-toggle med-fixed'>
           </label>
