@@ -123,7 +123,7 @@
     var hrsPerDay = document.getElementById('hrs_per_day_slider');
  
     var options = {
-      'data-version' : dataVersion,
+      'data_version' : dataVersion,
       'show_clock': showClock.checked,
       'auto_sort': autoSort.checked,
       'hrs_per_day': hrsPerDay.value
@@ -214,7 +214,7 @@
     $div_timer=$(".div-timer").remove();
     
     if (getQueryParam("show_clock")) { // Load configuration sent from phone is available in the URI
-      dataVersion = getQueryParam("data-version");
+      dataVersion = getQueryParam("data_version");
       $("#app-version").text(getQueryParam("app_version"));
       showClock.checked = getQueryParam("show_clock")=="1";
       autoSort.checked = getQueryParam("auto_sort")=="1";
