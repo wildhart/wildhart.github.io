@@ -156,18 +156,6 @@
     }
     return defaultValue || false;
   }
-
-  function selectText(containerid) {
-    if (document.selection) {
-        var range = document.body.createTextRange();
-        range.moveToElementText(document.getElementById(containerid));
-        range.select();
-    } else if (window.getSelection) {
-        var range = document.createRange();
-        range.selectNode(document.getElementById(containerid));
-        window.getSelection().addRange(range);
-    }
-  }
  
   var submitButton = document.getElementById('submit_button');
   submitButton.addEventListener('click', function() {
@@ -185,7 +173,6 @@
   });
 
   $("body").on('click', ".delete-timer", function(e) { // need to use this binding method since elements do not exist yet
-    console.log(e,this);
     var $t=$(this);
     var job = $t.closest("label").find("input[type=text]").attr("name").replace('input-timer-','');
     $t.closest(".div-timer").remove();

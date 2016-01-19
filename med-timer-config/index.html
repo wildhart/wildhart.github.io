@@ -30,23 +30,61 @@
     <h1 class='title'>Medication Timer Configuration</h1>
 
     <div class="item-container">
-      <div class="item-container-header" id="div-timers">Medication</div>
-      <div class="item-container-content div-timer">
+      <div class="item-container-header" id="div-meds">Medications</div>
+      <!--<div class="item-container-content div-med">
         <label class="item">
           <div class="item-input-wrapper item-input-wrapper-button">
-            <input type="text" class="item-input" name="input-med-name" placeholder="Medication Name">
+            <input type="text" class="item-input" name="input-med" placeholder="Medication Name">
           </div>
           <input type="button" class="item-button item-input-button delete-med" value="X">
         </label>
+      </div> -->
+      <div class="item-container-content div-med">
+        <table>
+          <tr><th>Medication</th><th>Next Due</th><th>Fixed</th><th>Delete</th></tr>
+          <tr class="div-med">
+            <td>
+              <div class="item-input-wrapper item-input-wrapper-button">
+              <input type="text" class="item-input" name="input-med-name" placeholder="Medication Name">
+              </div>
+            </td>
+            <td>
+    <label class="item">
+      <input type="time" class="item-time" name="time-1" value="18:35">
+    </label></td>
+            <td>
+        <label class='item'><input id='input-med-fixed' type='checkbox' class='item-toggle'></label></td>
+            <td><input type="button" class="item-button item-input-button delete-med" value="X"></td>
+          </tr>
+        </table>
       </div>
       <div class="button-container">
-        <input type="button" class="item-button" value="New Timer" id="new-med">
+        <input type="button" class="item-button" value="New Medication" id="new-med">
+      </div>
+    </div>
+
+    <div class="item-container">
+      <div class="item-container-header" id="div-timers">Timers</div>
+      <div class="item-container-content div-timer">
+        <label class="item">
+          <div class="item-input-wrapper item-input-wrapper-button">
+            <input type="text" class="item-input" name="input-timer" placeholder="Timer Name">
+          </div>
+          <input type="button" class="item-button item-input-button delete-timer" value="X">
+        </label>
+      </div>
+      <div class="button-container">
+        <input type="button" class="item-button" value="New Timer" id="new-timer">
       </div>
     </div>
 
     <div class='item-container'>
       <div class='item-container-header'>Options</div>
       <div class='item-container-content'>
+    <label class="item">
+      Example Item
+      <input type="time" class="item-time" name="time-1" value="18:35">
+    </label>
         <label class='item'>
           Mode
             <div class='tab-buttons'>
@@ -76,7 +114,7 @@
       <div class='item-container-content'>
         <label class='item'>
           Auto Sort
-          <input id='auto_sort_checkbox' type='checkbox' class='item-toggle'>
+          <input id='sort_checkbox' type='checkbox' class='item-toggle'>
         </label>
       </div>
       <div class='item-container-footer'>
@@ -93,14 +131,14 @@
     <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" class="center">
     <Br>
     <input type="hidden" name="cmd" value="_s-xclick">
-    <input type="hidden" name="hosted_button_id" value="UJM3GPZWYGVK8">
+    <input type="hidden" name="hosted_button_id" value="P4A5BZRG3SAVL">
     <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
     <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
     </form>
 
     <div class='item-container'>
       <div class="item-container-footer">
-        Job Timer Version <span id="app-version">x.xx</span><br/>
+        Med Timer Version <span id="app-version">x.xx</span><br/>
         by Chris Morison: <a href="mailto:cmorison@gmail.com">cmorison@gmail.com</a>
       </div>
     </div>
@@ -108,11 +146,11 @@
   </body>
   <script>
 
-  var $div_timer; // used to store the template for each timer
+  var $div_med; // used to store the template for each medication
   var dataVersion=0;
 
   function getConfigData() {
-    var showClock = document.getElementById('show_clock_checkbox');
+    var mode = document.getElementById('show_clock_checkbox');
     var autoSort = document.getElementById('auto_sort_checkbox');
     var hrsPerDay = document.getElementById('hrs_per_day_slider');
  
@@ -150,18 +188,6 @@
     }
     return defaultValue || false;
   }
-
-  function selectText(containerid) {
-    if (document.selection) {
-        var range = document.body.createTextRange();
-        range.moveToElementText(document.getElementById(containerid));
-        range.select();
-    } else if (window.getSelection) {
-        var range = document.createRange();
-        range.selectNode(document.getElementById(containerid));
-        window.getSelection().addRange(range);
-    }
-  }
  
   var submitButton = document.getElementById('submit_button');
   submitButton.addEventListener('click', function() {
@@ -178,8 +204,7 @@
     $new_timer.appendTo($("#div-timers"))
   });
 
-  $("body").on('click', ".delete-timer", function(e) { // need to use this binding method since elements do not exist yet
-    console.log(e,this);
+  $("body").on('click', ".delete-med", function(e) { // need to use this binding method since elements do not exist yet
     var $t=$(this);
     var job = $t.closest("label").find("input[type=text]").attr("name").replace('input-timer-','');
     $t.closest(".div-timer").remove();
@@ -191,59 +216,28 @@
     $("#mode-"+mode).addClass('active');
   });
 
-  $("#sort-button").on('click', function() {
-      var job=0;
-      var time_sheet_text="Job, Minutes\n";
-      var jobs=[];
-      while (getQueryParam("job_"+job)) {
-        var params = getQueryParam("job_"+job).split("|");
-        jobs.push(params[0]+", "+Math.round(params[1]/60)+"\n");
-        job++;
-      }
-      jobs.sort();
-
-      time_sheet_text+=jobs.join("")+"\nSince last reset on: "+getQueryParam("last_reset");
-      $("#time-sheet").val(time_sheet_text).attr("rows",job+4);
-  });
 
   (function() {
-    var showClock = document.getElementById('show_clock_checkbox');
-    var autoSort = document.getElementById('auto_sort_checkbox');
-    var hrsPerDay = document.getElementById('hrs_per_day_slider');
-
-    $div_timer=$(".div-timer").remove();
+  return;
+    $div_med=$(".div-med").remove();
     
-    if (getQueryParam("show_clock")) { // Load configuration sent from phone is available in the URI
+    if (getQueryParam("data_version")) { // Load configuration sent from phone is available in the URI
       dataVersion = getQueryParam("data_version");
       $("#app-version").text(getQueryParam("app_version"));
-      showClock.checked = getQueryParam("show_clock")=="1";
-      autoSort.checked = getQueryParam("auto_sort")=="1";
-      $('input[name=slider-hours]').val(getQueryParam("hrs_per_day"));
+      document.getElementById('alarm_checkbox').checked = getQueryParam("alarm")=="1";
+      document.getElementById('sort_checkbox').checked = getQueryParam("sort")=="1";
+      $(".tab-button").removeClass('active').eq(getQueryParam("mode")).addClass('active').click();
 
-      var job=0;
-      var time_sheet_text="Job, Minutes\n";
-      while (getQueryParam("job_"+job)) {
-        var $new_timer = $div_timer.clone();
-        var params = getQueryParam("job_"+job).split("|");
-        $new_timer.find("input[type=text]").attr("name","input-timer-"+job).val(params[0]).data("seconds",params[1]);
-        $new_timer.appendTo("#div-timers");
-        time_sheet_text+=params[0]+", "+Math.round(params[1]/60)+"\n";
-        job++;
+      var med=0;
+      while (getQueryParam("med_"+med)) {
+        var $new_med = $div_med.clone();
+        var params = getQueryParam("med_"+med).split("|");
+        $new_med.find("input[type=text]").attr("name","input-med-name-"+med).val(params[0]).data("seconds",params[1]).data("repeat",params[2]).data("fixed",params[3]);
+        $new_med.appendTo("#div-meds");
+        med++;
       }
 
-      time_sheet_text+="\nSince last reset on: "+getQueryParam("last_reset");
-      $("#time-sheet").val(time_sheet_text).attr("rows",job+4);
-      if (getQueryParam("active_job")) {
-        $(".div-timer input[type=text]").eq(getQueryParam("active_job")).addClass("active_job");
-        $cell=$(".mins").eq(getQueryParam("active_job"));
-        $cell.text($cell.text()*1.0+Math.floor(getQueryParam("timer_secs")/60));
-      }
-    } /*else if (localStorage['show_clock']) { // Load any previously saved configuration, if available
-
-      showClock.checked = localStorage['show_clock'];
-      autoSort.checked = localStorage['auto_sort'];
-      hrsPerDay.value = localStorage['hrs_per_day'];
-    } */
+    }
 
   })();
   </script>
