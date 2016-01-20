@@ -183,12 +183,6 @@
       if ($(this).hasClass("active_job")) active_job=index;
     });
     if (active_job>-1) options.active_job = active_job;
-    /*
-    // Save for next launch
-    localStorage['show_clock'] = options['show_clock'];
-    localStorage['auto_sort'] = options['auto_sort'];
-    localStorage['hrs_per_day'] = options['hrs_per_day'];
-    */
 
     console.log('Got options: ' + JSON.stringify(options));
     return options;
@@ -216,12 +210,13 @@
   });
 
   $("#new-med").on('click', function() {
-    console.log("hi");
-    location.reload();
-    return;
-    var $new_timer = $div_timer.clone();
-    $new_timer.find("input[type=text]").attr("name","input-timer-"+(new Date().getTime())).val("New Job").data("seconds",0);
-    $new_timer.appendTo($("#div-timers"))
+    var $new_med = $div_med.clone();
+    var med = new Date().getTime());
+    $new_med.find(".med-name").attr("name","med-name-"+med).val("New Medication");
+    $new_med.find(".med-time").attr("name","med-time-"+med).val("00:00");
+    $new_med.find(".med-fixed").attr("id","med-fixed-"+med).prop("checked",false);
+    $new_med.find("input[name=med-repeat-n]").attr("name","med-repeat-"+med).val(8);
+    $new_med.appendTo($("#div-meds"))
   });
 
   $("body").on('click', ".delete-med", function(e) { // need to use this binding method since elements do not exist yet
