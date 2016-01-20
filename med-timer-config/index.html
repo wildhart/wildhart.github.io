@@ -81,7 +81,7 @@
           </label>
           <label class="item half">
             Next Due
-            <input type="time" class="item-time med-time" name="med-time-n" value="18:35">
+            <input type="time" class="item-time med-time" name="med-time-n" value="18:35" data-secs="0">
           </label>
           <label class='item half right'>
             Fixed *
@@ -184,6 +184,7 @@
         +"|"+$("[name=med-time-"+index+"]").val()
         +"|"+$(".item-input[name=med-repeat-"+index+"]").val()
         +"|"+($("#med-fixed-"+index).prop("checked")?1:0)
+        +"|"+$("[name=med-time-"+index+"]").data('secs')
       );
     });
     console.log('Got options: ' + JSON.stringify(options));
@@ -247,7 +248,7 @@
         var $new_med = $div_med.clone().appendTo("#div-meds");
         var params = getQueryParam("med_"+med).split("|");
         $new_med.find(".med-name").attr("name","med-name-"+med).val(params[0]);
-        $new_med.find(".med-time").attr("name","med-time-"+med).val(params[1]);
+        $new_med.find(".med-time").attr("name","med-time-"+med).val(params[1]).data('secs',params[4]);
         $new_med.find("input[name=med-repeat-n]").attr("name","med-repeat-"+med).val(params[2]);
         $new_med.find(".med-fixed").attr("id","med-fixed-"+med).prop("checked",params[3]==1);
         med++;
