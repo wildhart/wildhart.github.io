@@ -62,7 +62,7 @@
 
     <div class="item-container">
       <div class="item-container-header" id="div-meds">Medications</div>
-       <div class="item-container-content div-med">
+      <div class="item-container-content div-med">
         <label class="item">
           <div class="item-input-wrapper item-input-wrapper-button">
             <input type="text" class="item-input med-name" name="med-name-n" placeholder="Medication Name">
@@ -210,19 +210,17 @@
   });
 
   $("#new-med").on('click', function() {
-    var $new_med = $div_med.clone();
+    $new_med = $div_med.clone().appendTo("#div-meds");
     var med = new Date().getTime();
     $new_med.find(".med-name").attr("name","med-name-"+med).val("New Medication");
-    $new_med.find(".med-time").attr("name","med-time-"+med).val("00:00");
-    $new_med.find(".med-fixed").attr("id","med-fixed-"+med).prop("checked",false);
-    $new_med.find("input[name=med-repeat-n]").attr("name","med-repeat-"+med).val(8);
-    $new_med.appendTo($("#div-meds"))
+    $new_med.find(".med-time").attr("name","med-time-"+med).itemTime();
+    $new_med.find(".med-fixed").attr("id","med-fixed-"+med).prop("checked",false).itemToggle();
+    $new_med.find("input[name=med-repeat-n]").attr("name","med-repeat-"+med).val(12);
+    $new_med.find(".item-slider").itemSlider();
   });
 
   $("body").on('click', ".delete-med", function(e) { // need to use this binding method since elements do not exist yet
-    var $t=$(this);
-    var job = $t.closest("label").find("input[type=text]").attr("name").replace('input-timer-','');
-    $t.closest(".div-timer").remove();
+    $(this).closest(".div-med").remove();
   });
 
   $(".tab-button").on('click', function(e) {
@@ -244,16 +242,14 @@
 
       var med=0;
       while (getQueryParam("med_"+med)) {
-        var $new_med = $div_med.clone();
+        var $new_med = $div_med.clone().appendTo("#div-meds");
         var params = getQueryParam("med_"+med).split("|");
         $new_med.find(".med-name").attr("name","med-name-"+med).val(params[0]);
         $new_med.find(".med-time").attr("name","med-time-"+med).val(params[1]);
         $new_med.find(".med-fixed").attr("id","med-fixed-"+med).prop("checked",params[3]==1);
         $new_med.find("input[name=med-repeat-n]").attr("name","med-repeat-"+med).val(params[2]);
-        $new_med.appendTo("#div-meds");
         med++;
       }
-
     }
 
   })();
