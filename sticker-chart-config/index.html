@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <title>Medication Timer Configuration</title>
+  <link rel='stylesheet' type='text/css' href='css/slate.min.css'>
+  <script src='js/slate.min.js'></script>
+  <style>
+  .title {
+    padding: 15px 10px;
+    text-transform: uppercase;
+    font-family: 'PT Sans', sans-serif;
+    font-size: 1.2em;
+    font-weight: 500;
+    color: #888888;
+    text-align: center;
+  }
+  .center {
+    text-align:center;
+  }
+  .tab-hint {
+    display:none;
+  }
+  .tab-hint.active {
+    display:inline;
+  }
+  .margin {
+    margin-left:10%;
+  }
+  .half {
+    display:block;
+    margin-left:0%;
+    width:42%;
+    float:left;
+    border-top:0px !important;
+  }
+  .half.right {
+    float:right;
+  }
+  .clear {
+    clear:both;
+  }
+  .slider-split {
+    width:100%;
+  }
+  .slider-split .left {
+    display:block;
+    position:relative;
+    margin-top:-1em;
+    margin-bottom:-0.4em;
+  }
+  input[type=time] {
+    visibility:collapse;
+  }
+  .item-styled-time {
+    top:16px;
+  }
+  </style>
+  </head>
+
+  <body>
+    <h1 class='title'>Medication Timer Configuration</h1>
+
+    <div class="item-container">
+      <div class="item-container-header" id="div-meds">Medications</div>
+      <div class="item-container-content div-med">
+        <label class="item">
+          <div class="item-input-wrapper item-input-wrapper-button">
+            <input type="text" class="item-input med-name" name="med-name-n" placeholder="Medication Name">
+          </div>
+          <input type="button" class="item-button item-input-button delete-med" value="X">
+        </label>
+        <div class='margin'>
+          <label class="item">
+            <div class="slider-split">
+              <span class="left">Repeat Hrs:</span>
+              <span class="right"><input type="range" class="item-slider" name="med-repeat-n" value="8" min="0" max="24"></span>
+            </div>
+            <div class="item-input-wrapper item-slider-text">
+              <input type="text" class="item-input" name="med-repeat-n" value="8" min="0" max="24">
+            </div>
+          </label>
+          <label class="item half">
+            Next Due
+            <input type="time" class="item-time med-time" name="med-time-n" value="18:35" data-secs="0">
+          </label>
+          <label class='item half right'>
+            Fixed *
+            <input id='med-fixed-n' type='checkbox' class='item-toggle med-fixed'>
+          </label>
+          <div class="clear"></div>
+        </div>
+      </div>
+      <div class='item-container-footer'>
+        FIXED: ON: Timer runs from when med SHOULD have been taken, e.g. Exact same time evey day.<br>
+        FIXED: OFF: Timer runs from when med was ACTUALLY taken, so you never take them too close together but can take them longer apart.
+      </div>
+      <div class="button-container">
+        <input type="button" class="item-button" value="New Medication" id="new-med">
+      </div>
+    </div>
+
+    <div class='item-container'>
+      <div class='item-container-header'>Options</div>
+      <div class='item-container-content'>
+        <label class='item'>
+          Mode
+            <div class='tab-buttons'>
+              <a name="mode" data-md='0' class="tab-button active">Count up</a>
+              <a name="mode" data-md='1' class="tab-button">Count down</a>
+              <a name="mode" data-md='2' class="tab-button">Next time</a>
+            </div>
+        </label>
+      </div>
+      <div class='item-container-footer'>
+        <span class="tab-hint active" id="mode-0">Timer counts up from when medication was last taken.</span>
+        <span class="tab-hint" id="mode-1">Timer counts down to when medication is next due.</span>
+        <span class="tab-hint" id="mode-2">Shows time when medication is next due.</span>
+      </div>
+
+      <div class='item-container-content'>
+        <label class='item'>
+          Alarm
+          <input id='alarm_checkbox' type='checkbox' class='item-toggle'>
+        </label>
+      </div>
+      <div class='item-container-footer'>
+        Open app and vibrate when next medication is due.
+      </div>
+    </div>
+
+      <div class='item-container-content'>
+        <label class='item'>
+          Auto Sort
+          <input id='sort_checkbox' type='checkbox' class='item-toggle'>
+        </label>
+      </div>
+      <div class='item-container-footer'>
+        Sort the medication list with the next medications at the top.
+      </div>
+    </div>
+
+    <div class='item-container'>
+      <div class='button-container'>
+        <input id='submit_button' type='button' class='item-button' value='SUBMIT'>
+      </div>
+    </div>
+
+    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" class="center">
+    <Br>
+    <input type="hidden" name="cmd" value="_s-xclick">
+    <input type="hidden" name="hosted_button_id" value="P4A5BZRG3SAVL">
+    <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+    <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+    </form>
+
+    <div class='item-container'>
+      <div class="item-container-footer">
+        Med Timer Version <span id="app-version">x.xx</span><br/>
+        by Chris Morison: <a href="mailto:cmorison@gmail.com">cmorison@gmail.com</a>
+      </div>
+    </div>
+
+  </body>
+  <script>
+
+  var $div_med; // used to store the template for each medication
+  var dataVersion=0;
+
+  function getConfigData() {
+    var mode = document.getElementById('show_clock_checkbox');
+    var autoSort = document.getElementById('auto_sort_checkbox');
+    var hrsPerDay = document.getElementById('hrs_per_day_slider');
+ 
+    var options = {
+      'data_version' : dataVersion,
+      'alarm': document.getElementById('alarm_checkbox').checked,
+      'sort': document.getElementById('sort_checkbox').checked,
+      'mode': $(".tab-button.active").data("md")
+    };
+
+    $(".div-med .med-name").each(function(index) {
+      options['med_'+index]=encodeURIComponent(
+        this.value
+        +"|"+$("[name=med-time-"+index+"]").val()
+        +"|"+$(".item-input[name=med-repeat-"+index+"]").val()
+        +"|"+($("#med-fixed-"+index).prop("checked")?1:0)
+        +"|"+$("[name=med-time-"+index+"]").data('secs')
+      );
+    });
+    console.log('Got options: ' + JSON.stringify(options));
+    return options;
+  }
+
+  function getQueryParam(variable, defaultValue) {
+    var query = location.search.substring(1);
+    var vars = query.split('&');
+    for (var i = 0; i < vars.length; i++) {
+      var pair = vars[i].split('=');
+      if (pair[0] === variable) {
+        return decodeURIComponent(pair[1]);
+      }
+    }
+    return defaultValue || false;
+  }
+ 
+  var submitButton = document.getElementById('submit_button');
+  submitButton.addEventListener('click', function() {
+    console.log('Submit');
+
+    // Set the return URL depending on the runtime environment
+    var return_to = getQueryParam('return_to', 'pebblejs://close#');
+    document.location = return_to + encodeURIComponent(JSON.stringify(getConfigData()));
+  });
+
+  $("#new-med").on('click', function() {
+    $new_med = $div_med.clone().appendTo("#div-meds");
+    var med = new Date().getTime();
+    $new_med.find(".med-name").attr("name","med-name-"+med).val("New Medication");
+    $new_med.find(".med-time").attr("name","med-time-"+med).itemTime();
+    $new_med.find(".med-fixed").attr("id","med-fixed-"+med).prop("checked",false).itemToggle();
+    $new_med.find("input[name=med-repeat-n]").attr("name","med-repeat-"+med).val(12);
+    $new_med.find(".item-slider").itemSlider();
+  });
+
+  $("body").on('click', ".delete-med", function(e) { // need to use this binding method since elements do not exist yet
+    $(this).closest(".div-med").remove();
+  });
+
+  $(".tab-button").on('click', function(e) {
+    var mode=$(this).data('md');
+    $(".tab-hint").removeClass('active');
+    $("#mode-"+mode).addClass('active');
+  });
+
+
+  (function() {
+    $div_med=$(".div-med").remove();
+    
+    if (getQueryParam("data_version")) { // Load configuration sent from phone is available in the URI
+      dataVersion = getQueryParam("data_version");
+      $("#app-version").text(getQueryParam("app_version"));
+      document.getElementById('alarm_checkbox').checked = getQueryParam("alarm")=="1";
+      document.getElementById('sort_checkbox').checked = getQueryParam("sort")=="1";
+      $(".tab-button").removeClass('active').eq(getQueryParam("mode")).addClass('active').click();
+
+      var med=0;
+      while (getQueryParam("med_"+med)) {
+        var $new_med = $div_med.clone().appendTo("#div-meds");
+        var params = getQueryParam("med_"+med).split("|");
+        $new_med.find(".med-name").attr("name","med-name-"+med).val(params[0]);
+        $new_med.find(".med-time").attr("name","med-time-"+med).val(params[1]).data('secs',params[4]);
+        $new_med.find("input[name=med-repeat-n]").attr("name","med-repeat-"+med).val(params[2]);
+        $new_med.find(".med-fixed").attr("id","med-fixed-"+med).prop("checked",params[3]==1);
+        med++;
+      }
+    }
+
+  })();
+  </script>
+</html>
