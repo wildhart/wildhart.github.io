@@ -211,7 +211,7 @@
 
   $("#new-med").on('click', function() {
     var $new_med = $div_med.clone();
-    var med = new Date().getTime());
+    var med = new Date().getTime();
     $new_med.find(".med-name").attr("name","med-name-"+med).val("New Medication");
     $new_med.find(".med-time").attr("name","med-time-"+med).val("00:00");
     $new_med.find(".med-fixed").attr("id","med-fixed-"+med).prop("checked",false);
