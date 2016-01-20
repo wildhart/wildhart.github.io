@@ -167,15 +167,12 @@
   });
 
   $("#new-timer").on('click', function() {
-    var $new_timer = $div_timer.clone();
+    var $new_timer = $div_timer.clone().appendTo("#div-timers");
     $new_timer.find("input[type=text]").attr("name","input-timer-"+(new Date().getTime())).val("New Job").data("seconds",0);
-    $new_timer.appendTo($("#div-timers"))
   });
 
   $("body").on('click', ".delete-timer", function(e) { // need to use this binding method since elements do not exist yet
-    var $t=$(this);
-    var job = $t.closest("label").find("input[type=text]").attr("name").replace('input-timer-','');
-    $t.closest(".div-timer").remove();
+    $(this).closest(".div-timer").remove();
   });
 
   $("#sort-button").on('click', function() {
@@ -210,10 +207,9 @@
       var job=0;
       var time_sheet_text="Job, Minutes\n";
       while (getQueryParam("job_"+job)) {
-        var $new_timer = $div_timer.clone();
+        var $new_timer = $div_timer.clone().appendTo("#div-timers");
         var params = getQueryParam("job_"+job).split("|");
         $new_timer.find("input[type=text]").attr("name","input-timer-"+job).val(params[0]).data("seconds",params[1]);
-        $new_timer.appendTo("#div-timers");
         time_sheet_text+=params[0]+", "+Math.round(params[1]/60)+"\n";
         job++;
       }
