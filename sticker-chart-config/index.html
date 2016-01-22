@@ -69,7 +69,7 @@
     };
 
     $(".div-child .child-name").each(function(index) {
-      options['child_'+index]=encodeURIComponent(this.value+"|"+$(this).data('num-stickers'));
+      options['child_'+index]=encodeURIComponent(this.value+"|"+$(this).data('num-stickers')+"|"+$(this).data('stickers'));
     });
     console.log('Got options: ' + JSON.stringify(options));
     return options;
@@ -99,7 +99,7 @@
   $("#new-child").on('click', function() {
     $new_child = $div_child.clone().appendTo("#div-children");
     var child = new Date().getTime();
-    $new_child.find(".child-name").attr("name","child-name-"+child).val("New Child").data("num-stickers",0);
+    $new_child.find(".child-name").attr("name","child-name-"+child).val("New Child").data("num-stickers",0).data("stickers","");
   });
 
   $("body").on('click', ".delete-child", function(e) { // need to use this binding method since elements do not exist yet
@@ -118,7 +118,7 @@
         console.log(child);
         var $new_child = $div_child.clone().appendTo("#div-children");
         var params = getQueryParam("child_"+child).split("|");
-        $new_child.find(".child-name").attr("name","child-name-"+child).val(params[0]).data("num-stickers",params[1]);
+        $new_child.find(".child-name").attr("name","child-name-"+child).val(params[0]).data("num-stickers",params[1]).data("stickers",params[2]);
         child++;
       }
     }
