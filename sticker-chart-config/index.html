@@ -117,7 +117,7 @@
       while (getQueryParam("child_"+child)) {
         var $new_child = $div_child.clone().appendTo("#div-child");
         var params = getQueryParam("child_"+child).split("|");
-        $new_child.find(".child-name").attr("name","child-name-"+med).val(params[0]).data("num-stickers",params[1]);
+        $new_child.find(".child-name").attr("name","child-name-"+child).val(params[0]).data("num-stickers",params[1]);
         child++;
       }
     }
