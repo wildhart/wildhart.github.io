@@ -102,19 +102,19 @@
     <div class='item-container'>
       <div class='item-container-header'>Options</div>
       <div class='item-container-content'>
-        <label class='item'>
-          Mode
-            <div class='tab-buttons'>
-              <a name="mode" data-md='0' class="tab-button active">Count up</a>
-              <a name="mode" data-md='1' class="tab-button">Count down</a>
-              <a name="mode" data-md='2' class="tab-button">Next time</a>
-            </div>
-        </label>
+		<label class="item">
+		  Mode
+		  <select name="mode" id="mode" dir='rtl' class="item-select" value="0">
+			<option class="item-select-option" value="0" selected>Count up</option>
+			<option class="item-select-option" value="1">Count down</option>
+			<option class="item-select-option" value="2">Next time</option>
+		  </select>
+		</label>
       </div>
       <div class='item-container-footer'>
-        <span class="tab-hint active" id="mode-0">Timer counts up from when medication was last taken.</span>
-        <span class="tab-hint" id="mode-1">Timer counts down to when medication is next due.</span>
-        <span class="tab-hint" id="mode-2">Shows time when medication is next due.</span>
+        <span class="tab-hint active">Timer counts up from when medication was last taken.</span>
+        <span class="tab-hint">Timer counts down to when medication is next due.</span>
+        <span class="tab-hint">Shows time when medication is next due.</span>
       </div>
 
       <div class='item-container-content'>
@@ -126,7 +126,6 @@
       <div class='item-container-footer'>
         Open app and vibrate when next medication is due.
       </div>
-    </div>
 
       <div class='item-container-content'>
         <label class='item'>
@@ -137,6 +136,27 @@
       <div class='item-container-footer'>
         Sort the medication list with the next medications at the top.
       </div>
+
+      <div class='item-container-content timeline'>
+        <label class='item'>
+          Timeline
+          <input id='timeline_checkbox' type='checkbox' class='item-toggle'>
+        </label>
+      </div>
+      <div class='item-container-footer timeline'>
+        Medications appear on the timeline.
+      </div>
+
+      <div class='item-container-content timeline'>
+        <label class='item'>
+          Timeline Nofifications
+          <input id='notifications_checkbox' type='checkbox' class='item-toggle'>
+        </label>
+      </div>
+      <div class='item-container-footer timeline'>
+        Timeline pins include notifications when medication is due.
+      </div>
+
     </div>
 
     <div class='item-container'>
@@ -165,6 +185,8 @@
 
   var $div_med; // used to store the template for each medication
   var dataVersion=0;
+	var TIMELINE_FLAG_ON            = 1;
+	var TIMELINE_FLAG_NOTIFICATIONS = 2;
 
   function getConfigData() {
     var mode = document.getElementById('show_clock_checkbox');
@@ -175,8 +197,10 @@
       'data_version' : dataVersion,
       'alarm': document.getElementById('alarm_checkbox').checked,
       'sort': document.getElementById('sort_checkbox').checked,
-      'mode': $(".tab-button.active").data("md")
+      'mode': document.getElementById('mode').value
     };
+    if ($(".timeline").length) options.timeline = 	(document.getElementById('timeline_checkbox').checked * TIMELINE_FLAG_ON) |
+    												(document.getElementById('notifications_checkbox').checked * TIMELINE_FLAG_NOTIFICATIONS);
 
     $(".div-med .med-name").each(function(index) {
       id=$(this).attr("name").replace("med-name-","");
@@ -227,10 +251,8 @@
     $(this).closest(".div-med").remove();
   });
 
-  $(".tab-button").on('click', function(e) {
-    var mode=$(this).data('md');
-    $(".tab-hint").removeClass('active');
-    $("#mode-"+mode).addClass('active');
+  $("#mode").on('change', function(e) {
+    $(".tab-hint").removeClass("active").eq(this.value).addClass("active");
   });
 
 
@@ -242,7 +264,14 @@
       $("#app-version").text(getQueryParam("app_version"));
       document.getElementById('alarm_checkbox').checked = getQueryParam("alarm")=="1";
       document.getElementById('sort_checkbox').checked = getQueryParam("sort")=="1";
-      $(".tab-button").removeClass('active').eq(getQueryParam("mode")).addClass('active').click();
+      $("#mode").val(getQueryParam("mode")).trigger("change");
+      var timeline=getQueryParam("timeline");
+      if (timeline) {
+      	document.getElementById('timeline_checkbox').checked = (timeline & TIMELINE_FLAG_ON);
+      	document.getElementById('notifications_checkbox').checked = (timeline & TIMELINE_FLAG_NOTIFICATIONS);
+      } else {
+		$(".timeline").remove();
+      }
 
       var med=0;
       while (getQueryParam("med_"+med)) {
