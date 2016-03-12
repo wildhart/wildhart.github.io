@@ -188,6 +188,8 @@
     if ($("#log-email").val()) {
     	options.log_email=$("#log-email").val();
     	options.log_day=$("#log-day").val();
+    	options.log_raw=document.getElementById('log_raw_checkbox').checked;
+    	options.log_reset=document.getElementById('log_reset_checkbox').checked;
     }
 
     console.log('Got options: ' + JSON.stringify(options));
