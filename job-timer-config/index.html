@@ -28,15 +28,19 @@
     <h1 class='title'>Job Timer Configuration</h1>
 
     <div class='item-container logs-email'>
-      <div class="item-container-header">Raw Logs Emailed to You</div>
+      <div class="item-container-header">Logs Emailed to You</div>
+
 	  <div class="item-container-content">
 		<label class="item">
 		  <div class="item-input-wrapper">
 			<input type="text" class="item-input" name="log-email" id="log-email" placeholder="Your email address">
 		  </div>
 		</label>
+	  </div>
+
+	  <div class="item-container-content">
 		<label class="item">
-		  Start new list and email list on:
+		  Day:
 		  <select name="log-day" id="log-day" dir='rtl' class="item-select">
 			<option class="item-select-option" selected>Monday</option>
 			<option class="item-select-option">Tuesday</option>
@@ -48,7 +52,30 @@
 		  </select>
 		</label>
 	  </div>
-	  </div>
+      <div class='item-container-footer'>
+        The raw log will be emailed to you the first time you open Job Timer on this day.
+      </div>
+
+      <div class='item-container-content'>
+        <label class='item'>
+          Raw logs
+          <input id='log_raw_checkbox' type='checkbox' class='item-toggle'>
+        </label>
+      </div>
+      <div class='item-container-footer'>
+        Also send raw logs of each job start and stop times.
+      </div>
+
+      <div class='item-container-content'>
+        <label class='item'>
+          Reset Timer
+          <input id='log_reset_checkbox' type='checkbox' class='item-toggle'>
+        </label>
+      </div>
+      <div class='item-container-footer'>
+        Also reset all timers to zero
+      </div>
+
     </div>
 
     <div class='item-container'>
@@ -86,9 +113,9 @@
           <input id='show_clock_checkbox' type='checkbox' class='item-toggle'>
         </label>
       </div>
-        <div class='item-container-footer'>
-          This shows a clock at the top of the jobs list.
-        </div>
+      <div class='item-container-footer'>
+        This shows a clock at the top of the jobs list.
+      </div>
 
       <div class='item-container-content'>
         <label class='item'>
@@ -248,6 +275,8 @@
       if (appVersion>=1.3) {
 		$("#log-email").val(getQueryParam("log_email") || "");
 		$("#log-day").val(getQueryParam("log_day") || "Monday");
+		document.getElementById('log_raw_checkbox').checked= getQueryParam("log_raw")=="1";
+		document.getElementById('log_reset_checkbox').checked=getQueryParam("log_reset")=="1";
       } else {
       	$(".logs-email").hide();
       }
